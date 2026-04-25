@@ -1,0 +1,75 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 32,
+  "spacing": 4,
+
+  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "custom/adaptive-profile",
+    "cpu", "memory", "disk",
+    "pulseaudio", "network",
+    "battery", "tray"
+  ],
+
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "code": "",
+      "browser": "",
+      "terminal": "",
+      "comms": "",
+      "default": ""
+    }
+  },
+
+  "custom/adaptive-profile": {
+    "exec": "curl -sf http://127.0.0.1:7979/status | python3 -c \"import sys,json; d=json.load(sys.stdin); print('🖥️ ' + d['current_profile'].upper())\" 2>/dev/null || echo '🧠 AI'",
+    "interval": 30,
+    "tooltip": "Adaptive OS — click to switch profile",
+    "on-click": "adaptive-os status"
+  },
+
+  "clock": {
+    "format": "{:%H:%M  %a %d %b}",
+    "tooltip-format": "{:%A, %d %B %Y}"
+  },
+
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 5
+  },
+
+  "memory": {
+    "format": " {used:0.1f}G",
+    "interval": 10
+  },
+
+  "disk": {
+    "format": " {percentage_used}%",
+    "path": "/"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " muted",
+    "format-icons": { "default": ["", "", ""] },
+    "on-click": "pavucontrol"
+  },
+
+  "network": {
+    "format-wifi": " {signalStrength}%",
+    "format-ethernet": " {ipaddr}",
+    "format-disconnected": "⚠ Disconnected",
+    "tooltip-format": "{ifname}: {ipaddr}"
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "format-charging": " {capacity}%"
+  },
+
+  "tray": { "spacing": 8 }
+}
