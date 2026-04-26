@@ -60,11 +60,14 @@ class DecisionEngine:
         self._config = config
         self._client = httpx.AsyncClient(timeout=config.timeout)
 
-    async def decide(self, snapshot: ContextSnapshot) -> ProfileDecision:
+    async def decide(self, snapshot: ContextSnapshot, habit_hint: str = "") -> ProfileDecision:
         """Ask the LLM which profile best matches the current context."""
+        context_text = snapshot.to_llm_text()
+        if habit_hint:
+            context_text += f"\n\n{habit_hint}"
         user_message = (
             "Analyse this system context and decide the best profile:\n\n"
-            + snapshot.to_llm_text()
+            + context_text
         )
 
         try:

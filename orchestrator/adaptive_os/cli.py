@@ -124,6 +124,17 @@ def ask(question: str) -> None:
 
 
 @cli.command()
+def report() -> None:
+    """Show weekly habit usage report."""
+    result = api("get", "/report")
+    console.print(Panel(
+        result.get("report", "No data yet — use Adaptive OS for a few days first."),
+        title="[bold blue]Weekly Usage Report[/bold blue]",
+        border_style="blue",
+    ))
+
+
+@cli.command()
 def logs() -> None:
     """Follow orchestrator logs."""
     log_path = Path("~/.local/share/adaptive-os/adaptive-os.log").expanduser()

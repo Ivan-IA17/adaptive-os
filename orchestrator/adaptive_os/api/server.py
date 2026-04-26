@@ -56,10 +56,15 @@ def build_app(orchestrator: Orchestrator) -> web.Application:
     async def list_profiles(request: web.Request) -> web.Response:
         return web.json_response({"profiles": KNOWN_PROFILES})
 
+    async def get_report(request: web.Request) -> web.Response:
+        report = await orchestrator.weekly_report()
+        return web.json_response({"report": report})
+
     app.router.add_get("/status", get_status)
     app.router.add_post("/switch/{profile}", switch_profile)
     app.router.add_post("/ask", ask)
     app.router.add_get("/profiles", list_profiles)
+    app.router.add_get("/report", get_report)
 
     return app
 

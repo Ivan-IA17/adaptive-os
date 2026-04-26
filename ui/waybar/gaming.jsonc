@@ -1,0 +1,77 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 28,
+  "spacing": 2,
+
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["custom/game-title"],
+  "modules-right": [
+    "custom/adaptive-profile",
+    "custom/fps",
+    "cpu", "memory",
+    "temperature",
+    "custom/gpu",
+    "clock",
+    "custom/notifications-muted"
+  ],
+
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": { "game": "🎮", "default": "" }
+  },
+
+  "custom/game-title": {
+    "exec": "hyprctl activewindow -j 2>/dev/null | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('title','')[:40])\" 2>/dev/null",
+    "interval": 3,
+    "format": "{}"
+  },
+
+  "custom/adaptive-profile": {
+    "exec": "echo '🎮 GAMING'",
+    "interval": 3600,
+    "format": "{}"
+  },
+
+  "custom/fps": {
+    "exec": "cat /tmp/mangohud_fps 2>/dev/null || echo 'FPS: --'",
+    "interval": 1,
+    "format": "🎯 {}"
+  },
+
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 2,
+    "states": { "warning": 70, "critical": 90 }
+  },
+
+  "memory": {
+    "format": " {used:0.0f}G/{total:0.0f}G",
+    "interval": 5
+  },
+
+  "temperature": {
+    "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
+    "critical-threshold": 85,
+    "format": " {temperatureC}°C",
+    "format-critical": "🔥 {temperatureC}°C",
+    "interval": 3
+  },
+
+  "custom/gpu": {
+    "exec": "nvidia-smi --query-gpu=utilization.gpu,temperature.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F',' '{printf \"GPU %s%% %s°C\",$1,$2}' || echo 'GPU N/A'",
+    "interval": 3,
+    "format": " {}"
+  },
+
+  "custom/notifications-muted": {
+    "exec": "echo '🔕 DND'",
+    "interval": 3600,
+    "tooltip": "Notifications paused during gaming"
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "interval": 60
+  }
+}

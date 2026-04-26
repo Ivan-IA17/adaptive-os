@@ -1,0 +1,73 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "spacing": 4,
+
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["custom/pomodoro"],
+  "modules-right": [
+    "custom/adaptive-profile",
+    "custom/focus-time",
+    "cpu",
+    "backlight",
+    "pulseaudio",
+    "battery",
+    "clock"
+  ],
+
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "reading": "📖", "notes": "📝", "web": "🌐", "default": ""
+    }
+  },
+
+  "custom/pomodoro": {
+    "exec": "pgrep gnome-pomodoro >/dev/null && gnome-pomodoro --show-status 2>/dev/null || echo '🍅 Pomodoro off'",
+    "interval": 5,
+    "on-click": "gnome-pomodoro --start-stop"
+  },
+
+  "custom/adaptive-profile": {
+    "exec": "echo '📖 STUDY'",
+    "interval": 3600
+  },
+
+  "custom/focus-time": {
+    "exec": "python3 -c \"\nimport sqlite3, pathlib, datetime\ndb = pathlib.Path('~/.local/share/adaptive-os/state.db').expanduser()\nif db.exists():\n    c = sqlite3.connect(db)\n    row = c.execute(\\\"SELECT switched_at FROM profile_history WHERE profile='study' ORDER BY id DESC LIMIT 1\\\").fetchone()\n    if row:\n        since = datetime.datetime.utcnow() - datetime.datetime.fromisoformat(row[0])\n        h,m = divmod(int(since.total_seconds())//60, 60)\n        print(f'⏱ {h}h{m:02d}m')\n    else: print('')\nelse: print('')\n\" 2>/dev/null",
+    "interval": 60,
+    "tooltip": "Time in study mode"
+  },
+
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 10
+  },
+
+  "backlight": {
+    "format": "{icon} {percent}%",
+    "format-icons": ["🌑", "🌒", "🌓", "🌔", "🌕"],
+    "on-scroll-up": "brightnessctl set +5%",
+    "on-scroll-down": "brightnessctl set 5%-"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " ",
+    "format-icons": { "default": ["", "", ""] },
+    "on-click": "pavucontrol"
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "format-charging": " {capacity}%",
+    "states": { "warning": 30, "critical": 15 }
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "tooltip-format": "{:%A, %d %B %Y}"
+  }
+}

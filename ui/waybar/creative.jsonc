@@ -1,0 +1,72 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 6,
+
+  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-center": ["custom/adaptive-profile"],
+  "modules-right": [
+    "custom/colour-profile",
+    "cpu", "memory",
+    "custom/gpu-vram",
+    "pulseaudio",
+    "clock",
+    "tray"
+  ],
+
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "canvas": "🎨", "preview": "👁", "files": "📁", "default": ""
+    }
+  },
+
+  "custom/adaptive-profile": {
+    "exec": "echo '🎨 CREATIVE'",
+    "interval": 3600
+  },
+
+  "custom/colour-profile": {
+    "exec": "dispwin -d 1 -v 2>/dev/null | grep 'Calibration' | head -1 || echo '🎨 sRGB'",
+    "interval": 60,
+    "tooltip": "Active colour profile",
+    "format": " {}"
+  },
+
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 3,
+    "states": { "warning": 80, "critical": 95 }
+  },
+
+  "memory": {
+    "format": " {used:0.1f}G",
+    "interval": 5
+  },
+
+  "custom/gpu-vram": {
+    "exec": "nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null | awk -F',' '{printf \"VRAM %sMB/%sMB\",$1,$2}' || echo ''",
+    "interval": 5,
+    "format": " {}",
+    "hide-empty-text": true
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " muted",
+    "format-icons": {
+      "headphone": "",
+      "default": ["", "", ""]
+    },
+    "on-click": "pavucontrol",
+    "tooltip": true
+  },
+
+  "clock": {
+    "format": "{:%H:%M  %d %b}",
+    "tooltip-format": "{:%A, %d %B %Y}"
+  },
+
+  "tray": { "spacing": 8 }
+}

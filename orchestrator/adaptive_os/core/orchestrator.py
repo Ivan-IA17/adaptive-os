@@ -15,6 +15,7 @@ from typing import Any
 
 from adaptive_os.core.config import Config
 from adaptive_os.core.decision_engine import DecisionEngine
+from adaptive_os.core.habit_tracker import HabitTracker
 from adaptive_os.core.state import StateDB
 from adaptive_os.detectors.context import ContextDetector, ContextSnapshot
 from adaptive_os.profiles.manager import ProfileManager
@@ -28,7 +29,7 @@ class Orchestrator:
 
     Detection loop:
       every `config.detection.interval` seconds →
-        sample context → ask LLM → maybe switch profile
+        sample context → ask LLM (with habit hints) → maybe switch profile
     """
 
     def __init__(self, config: Config) -> None:
@@ -37,10 +38,12 @@ class Orchestrator:
         self._detector = ContextDetector()
         self._engine = DecisionEngine(config.ollama)
         self._manager = ProfileManager(config, self._state)
+        self._habits = HabitTracker(self._state)
 
         self._last_switch_time: float = 0.0
         self._running = False
         self._last_snapshot: ContextSnapshot | None = None
+        self._tick_count: int = 0
 
     # ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -52,6 +55,9 @@ class Orchestrator:
         saved = await self._state.get("current_profile", self._config.initial_profile)
         self._manager._current = saved
         logger.info("Adaptive OS started. Current profile: %s", saved)
+
+        # Initial habit analysis (non-blocking)
+        asyncio.create_task(self._habits.analyse())
 
         self._running = True
         await self._detection_loop()
@@ -73,14 +79,27 @@ class Orchestrator:
             await asyncio.sleep(interval)
 
     async def _tick(self) -> None:
-        """One detection cycle: sample → decide → maybe switch."""
+        """One detection cycle: sample → decide (with habit hints) → maybe switch."""
+        self._tick_count += 1
+
+        # Re-analyse habits every 60 ticks (~30 min at default interval)
+        if self._tick_count % 60 == 0:
+            asyncio.create_task(self._habits.analyse())
+
         recent = await self._state.recent_profiles(n=5)
         snapshot = await self._detector.sample(recent_profiles=recent)
         self._last_snapshot = snapshot
 
         await self._state.record_snapshot(snapshot.to_dict())
 
-        decision = await self._engine.decide(snapshot)
+        # Enrich snapshot with learned habit hints for the LLM
+        habit_hint = ""
+        if self._habits.summary:
+            habit_hint = self._habits.summary.to_llm_hint(
+                snapshot.hour, snapshot.day_of_week, snapshot.active_apps
+            )
+
+        decision = await self._engine.decide(snapshot, habit_hint=habit_hint)
         logger.debug("Decision: profile=%s confidence=%.2f reason=%s",
                      decision.profile, decision.confidence, decision.reason)
 
@@ -131,11 +150,24 @@ class Orchestrator:
 
     async def status(self) -> dict[str, Any]:
         recent = await self._state.recent_profiles(n=5)
+        habit_summary = None
+        if self._habits.summary:
+            s = self._habits.summary
+            habit_summary = {
+                "total_switches": s.total_switches,
+                "most_used_profile": s.most_used_profile,
+                "days_tracked": s.days_tracked,
+            }
         return {
             "current_profile": self._manager.current_profile,
             "running": self._running,
             "ollama_model": self._config.ollama.model,
             "detection_interval": self._config.detection.interval,
             "recent_profiles": recent,
+            "habit_summary": habit_summary,
             "last_snapshot": self._last_snapshot.to_dict() if self._last_snapshot else None,
         }
+
+    async def weekly_report(self) -> str:
+        """Generate a weekly habit usage report."""
+        return await self._habits.weekly_report()
