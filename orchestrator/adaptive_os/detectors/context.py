@@ -6,7 +6,6 @@ a structured snapshot describing what the user is currently doing.
 from __future__ import annotations
 
 import asyncio
-import subprocess
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path

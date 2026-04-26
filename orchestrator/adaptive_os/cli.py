@@ -14,7 +14,6 @@ Usage:
 
 from __future__ import annotations
 
-import json
 import subprocess
 import sys
 from pathlib import Path
@@ -22,9 +21,7 @@ from pathlib import Path
 import click
 import httpx
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
-from rich import print as rprint
 
 API_URL = "http://127.0.0.1:7979"
 console = Console()
@@ -102,7 +99,7 @@ def switch(profile: str) -> None:
         icon = PROFILE_ICONS.get(profile, "")
         console.print(f"[green]✓ Switched to {icon} [bold]{profile}[/bold][/green]")
     else:
-        console.print(f"[red]✗ Switch failed[/red]")
+        console.print("[red]✗ Switch failed[/red]")
 
 
 @cli.command()
