@@ -69,7 +69,9 @@ def build_app(orchestrator: Orchestrator) -> web.Application:
     return app
 
 
-async def start_server(orchestrator: Orchestrator, host: str = "127.0.0.1", port: int = 7979) -> None:
+async def start_server(
+    orchestrator: Orchestrator, host: str = "127.0.0.1", port: int = 7979
+) -> None:
     app = build_app(orchestrator)
     runner = web.AppRunner(app)
     await runner.setup()

@@ -27,8 +27,11 @@ API_URL = "http://127.0.0.1:7979"
 console = Console()
 
 PROFILE_ICONS = {
-    "work": "🖥️", "gaming": "🎮", "creative": "🎨",
-    "server": "🖧", "study": "📖",
+    "work": "🖥️",
+    "gaming": "🎮",
+    "creative": "🎨",
+    "server": "🖧",
+    "study": "📖",
 }
 
 
@@ -88,9 +91,10 @@ def status() -> None:
 
 
 @cli.command()
-@click.argument("profile", type=click.Choice(
-    ["work", "gaming", "creative", "server", "study"], case_sensitive=False
-))
+@click.argument(
+    "profile",
+    type=click.Choice(["work", "gaming", "creative", "server", "study"], case_sensitive=False),
+)
 def switch(profile: str) -> None:
     """Manually switch to a profile."""
     with console.status(f"Switching to [bold]{profile}[/bold]..."):
@@ -109,11 +113,13 @@ def ask(question: str) -> None:
     with console.status("Thinking..."):
         result = api("post", "/ask", json={"question": question})
 
-    console.print(Panel(
-        result.get("answer", "No response"),
-        title="[bold cyan]Adaptive OS[/bold cyan]",
-        border_style="cyan",
-    ))
+    console.print(
+        Panel(
+            result.get("answer", "No response"),
+            title="[bold cyan]Adaptive OS[/bold cyan]",
+            border_style="cyan",
+        )
+    )
     profile = result.get("current_profile")
     if profile:
         icon = PROFILE_ICONS.get(profile, "")
@@ -124,11 +130,13 @@ def ask(question: str) -> None:
 def report() -> None:
     """Show weekly habit usage report."""
     result = api("get", "/report")
-    console.print(Panel(
-        result.get("report", "No data yet — use Adaptive OS for a few days first."),
-        title="[bold blue]Weekly Usage Report[/bold blue]",
-        border_style="blue",
-    ))
+    console.print(
+        Panel(
+            result.get("report", "No data yet — use Adaptive OS for a few days first."),
+            title="[bold blue]Weekly Usage Report[/bold blue]",
+            border_style="blue",
+        )
+    )
 
 
 @cli.command()
@@ -155,7 +163,9 @@ def voice(model: str | None) -> None:
             )
             return
         console.print("[green]🎙 Voice interface starting...[/green]")
-        console.print("Say [bold]'Hey Ada'[/bold] to activate, [bold]'stop listening'[/bold] to quit.")
+        console.print(
+            "Say [bold]'Hey Ada'[/bold] to activate, [bold]'stop listening'[/bold] to quit."
+        )
         await vi.start()
 
     asyncio.run(_run())
@@ -181,6 +191,7 @@ def config() -> None:
 def config_get(key: str) -> None:
     """Get a configuration value."""
     from adaptive_os.core.config import Config
+
     cfg = Config.load()
     parts = key.split(".")
     val = cfg.model_dump()
@@ -195,6 +206,7 @@ def config_get(key: str) -> None:
 def config_set(key: str, value: str) -> None:
     """Set a configuration value."""
     from adaptive_os.core.config import Config
+
     cfg = Config.load()
     d = cfg.model_dump()
     parts = key.split(".")

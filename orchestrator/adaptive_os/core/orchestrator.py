@@ -100,8 +100,12 @@ class Orchestrator:
             )
 
         decision = await self._engine.decide(snapshot, habit_hint=habit_hint)
-        logger.debug("Decision: profile=%s confidence=%.2f reason=%s",
-                     decision.profile, decision.confidence, decision.reason)
+        logger.debug(
+            "Decision: profile=%s confidence=%.2f reason=%s",
+            decision.profile,
+            decision.confidence,
+            decision.reason,
+        )
 
         if not decision.is_actionable:
             logger.debug("Confidence too low (%.2f), keeping current profile.", decision.confidence)
@@ -110,7 +114,9 @@ class Orchestrator:
         cooldown = self._config.detection.switch_cooldown
         since_last = time.monotonic() - self._last_switch_time
         if since_last < cooldown:
-            logger.debug("In cooldown (%ds remaining), skipping switch.", int(cooldown - since_last))
+            logger.debug(
+                "In cooldown (%ds remaining), skipping switch.", int(cooldown - since_last)
+            )
             return
 
         if decision.profile != self._manager.current_profile:

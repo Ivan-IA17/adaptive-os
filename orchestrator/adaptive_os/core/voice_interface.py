@@ -102,9 +102,16 @@ class VoiceInterface:
         tmp = Path(tempfile.mktemp(suffix=".wav"))
         # arecord: ALSA recorder — 16kHz mono (whisper.cpp requirement)
         proc = await asyncio.create_subprocess_exec(
-            "arecord", "-q",
-            "-f", "S16_LE", "-r", "16000", "-c", "1",
-            "-d", str(seconds),
+            "arecord",
+            "-q",
+            "-f",
+            "S16_LE",
+            "-r",
+            "16000",
+            "-c",
+            "1",
+            "-d",
+            str(seconds),
             str(tmp),
             stderr=asyncio.subprocess.DEVNULL,
         )
@@ -118,10 +125,13 @@ class VoiceInterface:
         try:
             result = await asyncio.create_subprocess_exec(
                 self._whisper_bin,
-                "-m", str(self._model),
-                "-f", str(audio_file),
+                "-m",
+                str(self._model),
+                "-f",
+                str(audio_file),
                 "--no-timestamps",
-                "-l", "es",   # Spanish; change to "en" for English-only
+                "-l",
+                "es",  # Spanish; change to "en" for English-only
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.DEVNULL,
             )
@@ -158,7 +168,8 @@ class VoiceInterface:
             return
         try:
             proc = await asyncio.create_subprocess_exec(
-                tts, text,
+                tts,
+                text,
                 stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.DEVNULL,
             )

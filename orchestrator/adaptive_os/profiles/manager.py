@@ -45,8 +45,13 @@ class ProfileManager:
             logger.debug("Already on profile '%s', skipping switch.", profile)
             return True
 
-        logger.info("Switching profile: %s → %s (confidence=%.2f, reason=%s)",
-                    self._current, profile, confidence, reason)
+        logger.info(
+            "Switching profile: %s → %s (confidence=%.2f, reason=%s)",
+            self._current,
+            profile,
+            confidence,
+            reason,
+        )
 
         steps = [
             ("Applying UI config", self._apply_ui(profile)),
@@ -75,15 +80,16 @@ class ProfileManager:
         return success
 
     def _nix_available(self) -> bool:
-        return subprocess.run(
-            ["which", "nix"], capture_output=True
-        ).returncode == 0
+        return subprocess.run(["which", "nix"], capture_output=True).returncode == 0
 
     async def _nix_switch(self, profile: str) -> None:
         """Run nixos-rebuild switch with the profile flake."""
         flake_path = self._repo / "nix"
         result = await asyncio.create_subprocess_exec(
-            "nixos-rebuild", "switch", "--flake", f"{flake_path}#{profile}",
+            "nixos-rebuild",
+            "switch",
+            "--flake",
+            f"{flake_path}#{profile}",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
@@ -120,7 +126,9 @@ class ProfileManager:
         await asyncio.sleep(0.3)
         asyncio.create_task(
             asyncio.create_subprocess_exec(
-                "waybar", "-c", str(config_path),
+                "waybar",
+                "-c",
+                str(config_path),
                 stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.DEVNULL,
             )
@@ -144,15 +152,16 @@ class ProfileManager:
     async def _notify(self, profile: str, reason: str) -> None:
         """Send a desktop notification about the profile switch."""
         icons = {
-            "work": "computer", "gaming": "applications-games",
-            "creative": "applications-multimedia", "server": "network-server",
+            "work": "computer",
+            "gaming": "applications-games",
+            "creative": "applications-multimedia",
+            "server": "network-server",
             "study": "accessories-text-editor",
         }
         icon = icons.get(profile, "system-run")
         body = reason if reason else f"Switched to {profile.title()} mode"
         await self._run(
-            ["notify-send", "-i", icon, "-t", "3000",
-             f"Adaptive OS: {profile.title()}", body],
+            ["notify-send", "-i", icon, "-t", "3000", f"Adaptive OS: {profile.title()}", body],
             check=False,
         )
 

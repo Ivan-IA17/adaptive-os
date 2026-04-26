@@ -27,25 +27,28 @@ logger = logging.getLogger(__name__)
 @dataclass
 class UsagePattern:
     """A learned pattern: at (hour, day_of_week), profile X is used N% of the time."""
+
     hour: int
     day_of_week: int
     profile: str
-    frequency: float       # 0.0 – 1.0 (fraction of observations)
+    frequency: float  # 0.0 – 1.0 (fraction of observations)
     sample_count: int
 
 
 @dataclass
 class AppCorrelation:
     """App X running correlates with profile Y at this strength."""
+
     app: str
     profile: str
-    correlation: float     # 0.0 – 1.0
+    correlation: float  # 0.0 – 1.0
     sample_count: int
 
 
 @dataclass
 class HabitSummary:
     """Aggregated learning summary for use by the DecisionEngine."""
+
     # time_priors[hour][day_of_week] = {profile: probability}
     time_priors: dict[int, dict[int, dict[str, float]]] = field(
         default_factory=lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
@@ -181,7 +184,9 @@ class HabitTracker:
         self._summary = summary
         logger.info(
             "Habit analysis complete: %d switches, %d days tracked, most-used: %s",
-            summary.total_switches, summary.days_tracked, summary.most_used_profile
+            summary.total_switches,
+            summary.days_tracked,
+            summary.most_used_profile,
         )
         return summary
 
@@ -216,7 +221,7 @@ class HabitTracker:
         for app, correlations in sorted(s.app_correlations.items()):
             for profile, corr in sorted(correlations, key=lambda x: x[1], reverse=True):
                 if corr >= 0.75 and app not in shown:
-                    lines.append(f"  {app} → {profile} ({int(corr*100)}%)")
+                    lines.append(f"  {app} → {profile} ({int(corr * 100)}%)")
                     shown.add(app)
                     break
 

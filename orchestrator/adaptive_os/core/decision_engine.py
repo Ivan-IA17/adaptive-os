@@ -65,10 +65,7 @@ class DecisionEngine:
         context_text = snapshot.to_llm_text()
         if habit_hint:
             context_text += f"\n\n{habit_hint}"
-        user_message = (
-            "Analyse this system context and decide the best profile:\n\n"
-            + context_text
-        )
+        user_message = "Analyse this system context and decide the best profile:\n\n" + context_text
 
         try:
             response = await self._client.post(
@@ -89,12 +86,12 @@ class DecisionEngine:
 
         except httpx.ConnectError:
             logger.error("Cannot reach Ollama at %s — is it running?", self._config.host)
-            return ProfileDecision(profile="work", confidence=0.0,
-                                   reason="Ollama unreachable, keeping current profile")
+            return ProfileDecision(
+                profile="work", confidence=0.0, reason="Ollama unreachable, keeping current profile"
+            )
         except Exception as exc:
             logger.exception("Decision engine error: %s", exc)
-            return ProfileDecision(profile="work", confidence=0.0,
-                                   reason=f"Error: {exc}")
+            return ProfileDecision(profile="work", confidence=0.0, reason=f"Error: {exc}")
 
     def _parse_response(self, raw: str) -> ProfileDecision:
         """Parse the LLM JSON response into a ProfileDecision."""
@@ -111,12 +108,14 @@ class DecisionEngine:
                 profile = "work"
                 confidence = 0.0
 
-            return ProfileDecision(profile=profile, confidence=confidence,
-                                   reason=reason, raw_response=raw)
+            return ProfileDecision(
+                profile=profile, confidence=confidence, reason=reason, raw_response=raw
+            )
         except (json.JSONDecodeError, KeyError, ValueError) as exc:
             logger.warning("Failed to parse LLM response: %s\nRaw: %s", exc, raw)
-            return ProfileDecision(profile="work", confidence=0.0,
-                                   reason="Parse error", raw_response=raw)
+            return ProfileDecision(
+                profile="work", confidence=0.0, reason="Parse error", raw_response=raw
+            )
 
     async def ask(self, question: str) -> str:
         """Free-form question to the LLM about OS management (conversational interface)."""

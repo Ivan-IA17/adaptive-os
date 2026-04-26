@@ -8,7 +8,7 @@ from __future__ import annotations
 import asyncio
 import json
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 import pytest_asyncio
@@ -175,7 +175,7 @@ class TestConversationalInterface:
 
             result = await orchestrator.ask("I want to play some games")
 
-        mock_switch.assert_called_once_with("gaming", reason=pytest.approx(str, abs=0))
+        mock_switch.assert_called_once_with("gaming", reason=ANY)
         assert "answer" in result
 
     @pytest.mark.asyncio

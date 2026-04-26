@@ -71,14 +71,56 @@ class ContextDetector:
     """Samples system state and returns a ContextSnapshot."""
 
     # Apps that strongly indicate a specific context
-    _DEV_APPS = {"code", "nvim", "vim", "emacs", "alacritty", "kitty", "wezterm",
-                  "git", "docker", "kubectl", "python3", "node", "cargo", "go"}
-    _GAMING_APPS = {"steam", "lutris", "heroic", "gamemode", "wine", "proton",
-                     "csgo", "minecraft", "factorio"}
-    _CREATIVE_APPS = {"krita", "inkscape", "gimp", "blender", "obs", "audacity",
-                       "davinci", "kdenlive", "ardour", "carla"}
-    _STUDY_APPS = {"zotero", "anki", "obsidian", "evince", "okular", "calibre",
-                    "foxit", "texstudio", "libreoffice"}
+    _DEV_APPS = {
+        "code",
+        "nvim",
+        "vim",
+        "emacs",
+        "alacritty",
+        "kitty",
+        "wezterm",
+        "git",
+        "docker",
+        "kubectl",
+        "python3",
+        "node",
+        "cargo",
+        "go",
+    }
+    _GAMING_APPS = {
+        "steam",
+        "lutris",
+        "heroic",
+        "gamemode",
+        "wine",
+        "proton",
+        "csgo",
+        "minecraft",
+        "factorio",
+    }
+    _CREATIVE_APPS = {
+        "krita",
+        "inkscape",
+        "gimp",
+        "blender",
+        "obs",
+        "audacity",
+        "davinci",
+        "kdenlive",
+        "ardour",
+        "carla",
+    }
+    _STUDY_APPS = {
+        "zotero",
+        "anki",
+        "obsidian",
+        "evince",
+        "okular",
+        "calibre",
+        "foxit",
+        "texstudio",
+        "libreoffice",
+    }
 
     async def sample(self, recent_profiles: list[str] | None = None) -> ContextSnapshot:
         """Take a full system sample and return a ContextSnapshot."""
@@ -134,12 +176,15 @@ class ContextDetector:
         """Get the title of the focused window via hyprctl."""
         try:
             result = await asyncio.create_subprocess_exec(
-                "hyprctl", "activewindow", "-j",
+                "hyprctl",
+                "activewindow",
+                "-j",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.DEVNULL,
             )
             stdout, _ = await asyncio.wait_for(result.communicate(), timeout=2)
             import json
+
             data = json.loads(stdout)
             return data.get("title", "")
         except Exception:
@@ -174,12 +219,15 @@ class ContextDetector:
         """Check for external displays via hyprctl."""
         try:
             result = await asyncio.create_subprocess_exec(
-                "hyprctl", "monitors", "-j",
+                "hyprctl",
+                "monitors",
+                "-j",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.DEVNULL,
             )
             stdout, _ = await asyncio.wait_for(result.communicate(), timeout=2)
             import json
+
             monitors = json.loads(stdout)
             return len(monitors) > 1
         except Exception:
@@ -189,7 +237,8 @@ class ContextDetector:
         """Detect current audio output device type via pactl."""
         try:
             result = await asyncio.create_subprocess_exec(
-                "pactl", "get-default-sink",
+                "pactl",
+                "get-default-sink",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.DEVNULL,
             )
