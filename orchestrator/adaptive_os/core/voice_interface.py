@@ -120,6 +120,8 @@ class VoiceInterface:
 
     async def _transcribe(self, audio_file: Path) -> str:
         """Run whisper.cpp on the audio file and return the transcript."""
+        if self._whisper_bin is None:
+            return ""
         if not audio_file.exists() or audio_file.stat().st_size < 1000:
             return ""
         try:
