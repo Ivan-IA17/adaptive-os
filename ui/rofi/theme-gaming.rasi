@@ -1,0 +1,8 @@
+/* Gaming profile — dark, purple accent */
+* {
+    bg:     #0A0A0F;
+    bg-alt: #1A0A2E;
+    fg:     #E0D0FF;
+    fg-dim: #6B5B95;
+    accent: #7C3AED;
+}

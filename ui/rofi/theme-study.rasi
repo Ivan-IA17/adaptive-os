@@ -1,0 +1,8 @@
+/* Study profile — warm light, green accent */
+* {
+    bg:     #FAFAF9;
+    bg-alt: #F5F5F4;
+    fg:     #1C1917;
+    fg-dim: #A8A29E;
+    accent: #059669;
+}

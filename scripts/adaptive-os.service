@@ -1,0 +1,32 @@
+[Unit]
+Description=Adaptive OS AI Orchestrator
+Documentation=https://github.com/Ivan-IA17/adaptive-os
+After=graphical-session.target ollama.service
+PartOf=graphical-session.target
+Wants=ollama.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/adaptive-os start
+ExecStop=/bin/kill -TERM $MAINPID
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=10s
+
+# Environment
+Environment=ADAPTIVE_OS_ROOT=%h/adaptive-os
+Environment=OLLAMA_HOST=http://localhost:11434
+Environment=XDG_RUNTIME_DIR=/run/user/%U
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=adaptive-os
+
+# Hardening (runs as user, not root)
+NoNewPrivileges=true
+ProtectHome=false
+PrivateTmp=true
+
+[Install]
+WantedBy=graphical-session.target

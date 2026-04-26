@@ -1,0 +1,17 @@
+/* Adaptive OS Profile Switcher — special Rofi mode */
+/* Launch with: rofi -show adaptive-os -modi "adaptive-os:adaptive-os-rofi-mode" */
+
+@import "theme-work.rasi"
+
+window {
+    width:  400px;
+    border: 2px solid;
+    border-color: @accent;
+    border-radius: 12px;
+}
+
+element selected {
+    background-color: @accent;
+}
+
+/* Profile icons shown via element-text when using script mode */

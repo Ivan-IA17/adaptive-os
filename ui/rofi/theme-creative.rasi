@@ -1,0 +1,8 @@
+/* Creative profile — neutral grey, violet accent */
+* {
+    bg:     #18181B;
+    bg-alt: #27272A;
+    fg:     #F4F4F5;
+    fg-dim: #71717A;
+    accent: #A855F7;
+}

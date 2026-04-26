@@ -135,6 +135,36 @@ def report() -> None:
 
 
 @cli.command()
+@click.option("--model", default=None, help="Path to whisper.cpp model file")
+def voice(model: str | None) -> None:
+    """Start voice interface (requires whisper.cpp + a model)."""
+    import asyncio
+    from adaptive_os.core.config import Config
+    from adaptive_os.core.orchestrator import Orchestrator
+    from adaptive_os.core.voice_interface import VoiceInterface
+    from pathlib import Path
+
+    async def _run() -> None:
+        cfg = Config.load()
+        orch = Orchestrator(cfg)
+        await orch._state.init()
+        model_path = Path(model) if model else None
+        vi = VoiceInterface(orch, model_path=model_path)
+        if not vi.available:
+            console.print(
+                "[red]✗ whisper.cpp not found.[/red]\n"
+                "Install it: [cyan]https://github.com/ggerganov/whisper.cpp[/cyan]\n"
+                "Get a model: [cyan]adaptive-os voice --help[/cyan]"
+            )
+            return
+        console.print("[green]🎙 Voice interface starting...[/green]")
+        console.print("Say [bold]'Hey Ada'[/bold] to activate, [bold]'stop listening'[/bold] to quit.")
+        await vi.start()
+
+    asyncio.run(_run())
+
+
+@cli.command()
 def logs() -> None:
     """Follow orchestrator logs."""
     log_path = Path("~/.local/share/adaptive-os/adaptive-os.log").expanduser()

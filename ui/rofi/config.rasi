@@ -1,0 +1,72 @@
+/* Adaptive OS — Rofi base configuration */
+/* Profile-specific themes override colours via @import */
+
+@import "theme-work.rasi"
+
+* {
+    font:            "JetBrainsMono Nerd Font 11";
+    background-color: transparent;
+    text-color:      @fg;
+}
+
+window {
+    background-color: @bg;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    10px;
+    padding:          12px;
+    width:            520px;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [ inputbar, listview ];
+    spacing:          8px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius:    6px;
+    padding:          10px 14px;
+    children:         [ prompt, entry ];
+    spacing:          8px;
+}
+
+prompt {
+    text-color: @accent;
+    font:       "JetBrainsMono Nerd Font Bold 11";
+}
+
+entry {
+    placeholder:       "Type to search...";
+    placeholder-color: @fg-dim;
+}
+
+listview {
+    background-color: transparent;
+    lines:            8;
+    spacing:          2px;
+    scrollbar:        false;
+}
+
+element {
+    background-color: transparent;
+    border-radius:    6px;
+    padding:          8px 12px;
+    spacing:          10px;
+    children:         [ element-icon, element-text ];
+}
+
+element selected {
+    background-color: @accent;
+    text-color:       @bg;
+}
+
+element-icon {
+    size:             1.2em;
+    vertical-align:   0.5;
+}
+
+element-text {
+    vertical-align: 0.5;
+}

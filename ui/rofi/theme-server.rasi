@@ -1,0 +1,8 @@
+/* Server profile — terminal green on black */
+* {
+    bg:     #000000;
+    bg-alt: #0D1117;
+    fg:     #39D353;
+    fg-dim: #1A7F37;
+    accent: #39D353;
+}

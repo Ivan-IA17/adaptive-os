@@ -1,0 +1,8 @@
+/* Work profile — dark focused, blue accent */
+* {
+    bg:     #0F172A;
+    bg-alt: #1E293B;
+    fg:     #E2E8F0;
+    fg-dim: #475569;
+    accent: #1565C0;
+}
