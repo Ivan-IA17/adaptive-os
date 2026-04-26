@@ -1,0 +1,56 @@
+name: study
+display_name: "Study"
+icon: "📖"
+
+description: >
+  Focused study and reading environment. Enables Pomodoro tracking, reduces
+  display colour temperature with wlsunset (warm light), dims inactive windows,
+  and sets the CPU to powersave to minimise fan noise.
+
+detection:
+  apps:
+    match_any:
+      - obsidian
+      - anki
+      - zotero
+      - mendeley
+      - calibre
+      - okular
+      - evince
+      - zathura
+      - gnome-pomodoro
+      - pomotroid
+      - xmind
+      - freeplane
+      - minder
+    weight: 0.85
+
+  window_title_patterns:
+    match_any:
+      - "Obsidian"
+      - "Anki"
+      - "Zotero"
+      - "PDF"
+      - ".pdf"
+    weight: 0.65
+
+  time_hints:
+    # Mornings and late evenings → studying
+    weekday_hours: [6, 7, 20, 21, 22]
+    weight: 0.25
+
+  system:
+    low_cpu_load: true    # quiet system → reading/studying
+    no_gamepad: true
+
+nix_profile: study
+hyprland_config: study
+waybar_config: study
+theme: study
+cpu_governor: powersave
+services:
+  enable:
+    - wlsunset
+  disable:
+    - gamemode
+    - docker

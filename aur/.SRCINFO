@@ -1,0 +1,30 @@
+pkgbase = adaptive-os
+	pkgdesc = AI-driven system orchestrator that adapts your OS to your context using local LLMs
+	pkgver = 0.1.0
+	pkgrel = 1
+	url = https://github.com/Ivan-IA17/adaptive-os
+	arch = any
+	license = MIT
+	depends = python>=3.11
+	depends = python-aiohttp
+	depends = python-aiosqlite
+	depends = python-click
+	depends = python-httpx
+	depends = python-psutil
+	depends = python-pydantic
+	depends = python-pyyaml
+	depends = python-rich
+	depends = python-watchdog
+	depends = ollama
+	optdepends = whisper.cpp: voice interface (speech-to-text)
+	optdepends = espeak-ng: text-to-speech responses
+	optdepends = alsa-utils: microphone recording for voice interface
+	optdepends = hyprland: Wayland compositor with per-profile configs
+	optdepends = waybar: status bar with per-profile configs
+	optdepends = rofi-wayland: app launcher with per-profile themes
+	optdepends = wlsunset: blue light filter for study profile
+	optdepends = gamemode: CPU/GPU boost for gaming profile
+	source = adaptive-os-0.1.0.tar.gz::https://github.com/Ivan-IA17/adaptive-os/archive/refs/tags/v0.1.0.tar.gz
+	sha256sums = SKIP
+
+pkgname = adaptive-os

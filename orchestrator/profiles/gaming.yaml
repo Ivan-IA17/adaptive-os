@@ -1,0 +1,58 @@
+name: gaming
+display_name: "Gaming"
+icon: "🎮"
+
+description: >
+  Maximum performance for gaming. Enables gamemode, sets the CPU/GPU governor to
+  performance, disables background services, and configures a borderless fullscreen
+  compositor layout with low-latency audio.
+
+detection:
+  apps:
+    match_any:
+      - steam
+      - lutris
+      - heroic
+      - bottles
+      - gamescope
+      - mangohud
+      - protonup
+      - retroarch
+      - dolphin-emu
+      - pcsx2
+      - rpcs3
+      - minecraft
+      - factorio
+      - dota2
+      - csgo
+    weight: 0.95
+
+  window_title_patterns:
+    match_any:
+      - "Steam"
+      - "Lutris"
+      - "Heroic Games"
+    weight: 0.60
+
+  system:
+    gamepad_connected: true   # gamepad → strong signal for gaming
+    weight_gamepad: 0.80
+
+  time_hints:
+    # Evenings and weekends → higher prior
+    weekend: true
+    weekday_hours: [18, 19, 20, 21, 22, 23]
+    weight: 0.30
+
+nix_profile: gaming
+hyprland_config: gaming
+waybar_config: gaming
+theme: gaming
+cpu_governor: performance
+services:
+  enable:
+    - gamemode
+  disable:
+    - syncthing
+    - docker
+    - pipewire-pulse   # replaced by low-latency config

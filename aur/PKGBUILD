@@ -1,0 +1,57 @@
+# Maintainer: Ivan Antonio Garcia Lopez <ivanantoniogarcialopez17@gmail.com>
+pkgname=adaptive-os
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="AI-driven system orchestrator that adapts your OS to your context using local LLMs"
+arch=('any')
+url="https://github.com/Ivan-IA17/adaptive-os"
+license=('MIT')
+depends=(
+    'python>=3.11'
+    'python-aiohttp'
+    'python-aiosqlite'
+    'python-click'
+    'python-httpx'
+    'python-psutil'
+    'python-pydantic'
+    'python-pyyaml'
+    'python-rich'
+    'python-watchdog'
+    'ollama'
+)
+optdepends=(
+    'whisper.cpp: voice interface (speech-to-text)'
+    'espeak-ng: text-to-speech responses'
+    'alsa-utils: microphone recording for voice interface'
+    'hyprland: Wayland compositor with per-profile configs'
+    'waybar: status bar with per-profile configs'
+    'rofi-wayland: app launcher with per-profile themes'
+    'wlsunset: blue light filter for study profile'
+    'gamemode: CPU/GPU boost for gaming profile'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver/orchestrator"
+    python -m build --wheel --no-isolation
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver/orchestrator"
+    python -m installer --destdir="$pkgdir" dist/*.whl
+
+    # Install UI configs
+    install -dm755 "$pkgdir/usr/share/$pkgname"
+    cp -r "$srcdir/$pkgname-$pkgver/ui"      "$pkgdir/usr/share/$pkgname/"
+    cp -r "$srcdir/$pkgname-$pkgver/nix"     "$pkgdir/usr/share/$pkgname/"
+    cp -r "$srcdir/$pkgname-$pkgver/scripts" "$pkgdir/usr/share/$pkgname/"
+
+    # Install systemd user service
+    install -Dm644 "$srcdir/$pkgname-$pkgver/scripts/adaptive-os.service" \
+        "$pkgdir/usr/lib/systemd/user/adaptive-os.service"
+
+    # Install license
+    install -Dm644 "$srcdir/$pkgname-$pkgver/LICENSE" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

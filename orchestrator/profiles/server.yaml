@@ -1,0 +1,60 @@
+name: server
+display_name: "Server"
+icon: "🖧"
+
+description: >
+  Headless-style server administration mode. Maximises network and I/O performance,
+  enables strict firewall rules, disables compositing effects, and focuses on
+  terminal/SSH/monitoring workflows.
+
+detection:
+  apps:
+    match_any:
+      - htop
+      - btop
+      - glances
+      - docker
+      - podman
+      - kubectl
+      - k9s
+      - ansible
+      - terraform
+      - vagrant
+      - ssh
+      - tmux
+      - screen
+      - wireshark
+      - nmap
+      - netdata
+      - prometheus
+      - grafana
+    weight: 0.80
+
+  window_title_patterns:
+    match_any:
+      - "ssh "
+      - "docker "
+      - "kubectl"
+      - "ansible"
+      - "@server"
+      - "root@"
+    weight: 0.70
+
+  system:
+    multiple_ssh_connections: true   # active SSH sessions → server work
+    no_gamepad: true
+
+nix_profile: server
+hyprland_config: null     # uses fallback minimal config
+waybar_config: null
+theme: server
+cpu_governor: performance
+services:
+  enable:
+    - docker
+    - nginx
+    - openssh
+  disable:
+    - gamemode
+    - wlsunset
+    - colord

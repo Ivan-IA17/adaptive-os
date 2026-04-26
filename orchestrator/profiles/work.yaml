@@ -1,0 +1,66 @@
+name: work
+display_name: "Work"
+icon: "🖥️"
+
+description: >
+  Optimised for software development, writing, and office tasks.
+  Enables productivity tools, tunes the CPU for sustained performance,
+  and configures the compositor for a distraction-free two-column layout.
+
+detection:
+  apps:
+    match_any:
+      - code
+      - codium
+      - idea
+      - pycharm
+      - goland
+      - nvim
+      - vim
+      - emacs
+      - helix
+      - zed
+      - cursor
+      - libreoffice
+      - thunderbird
+      - teams
+      - slack
+      - zoom
+      - notion
+      - obsidian
+    weight: 0.85
+
+  window_title_patterns:
+    match_any:
+      - "*.py"
+      - "*.rs"
+      - "*.go"
+      - "*.ts"
+      - "*.tsx"
+      - "GitHub"
+      - "GitLab"
+      - "Jira"
+      - "Linear"
+      - "Confluence"
+    weight: 0.70
+
+  time_hints:
+    # Weekdays 08:00–18:00 → higher prior for work profile
+    weekday_hours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+    weight: 0.40
+
+  system:
+    no_gamepad: true    # gamepad connected → not work
+    no_external_gpu_load: true  # heavy GPU load → likely gaming/creative
+
+nix_profile: work
+hyprland_config: work
+waybar_config: work
+theme: work
+cpu_governor: performance
+services:
+  enable:
+    - syncthing
+    - docker
+  disable:
+    - gamemode

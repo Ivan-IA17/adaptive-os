@@ -1,0 +1,60 @@
+name: creative
+display_name: "Creative"
+icon: "🎨"
+
+description: >
+  Configured for digital art, 3D modelling, video editing, and music production.
+  Enables JACK audio, colour management (colord + ICC profiles), and compositor
+  settings suitable for colour-accurate floating windows.
+
+detection:
+  apps:
+    match_any:
+      - krita
+      - gimp
+      - inkscape
+      - blender
+      - kdenlive
+      - davinci
+      - resolve
+      - obs
+      - obs-studio
+      - ardour
+      - bitwig
+      - reaper
+      - lmms
+      - audacity
+      - freecad
+      - openscad
+      - natron
+      - rawtherapee
+      - darktable
+    weight: 0.90
+
+  window_title_patterns:
+    match_any:
+      - "Krita"
+      - "GIMP"
+      - "Blender"
+      - "DaVinci Resolve"
+      - "Ardour"
+      - "Bitwig"
+    weight: 0.75
+
+  system:
+    high_gpu_load: true       # GPU-heavy but not a game → creative
+    no_gamepad: true
+    weight_gpu: 0.50
+
+nix_profile: creative
+hyprland_config: creative
+waybar_config: creative
+theme: creative
+cpu_governor: performance
+services:
+  enable:
+    - colord
+    - pipewire-jack
+  disable:
+    - gamemode
+    - syncthing
