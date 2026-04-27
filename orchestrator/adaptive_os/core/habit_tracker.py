@@ -14,7 +14,7 @@ import json
 import logging
 from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import aiosqlite
@@ -125,7 +125,7 @@ class HabitTracker:
         Re-analyse the history and update the internal summary.
         Call this once per hour or after each profile switch.
         """
-        since = (datetime.utcnow() - timedelta(days=lookback_days)).isoformat()
+        since = (datetime.now(timezone.utc) - timedelta(days=lookback_days)).isoformat()
 
         switches = await self._fetch_switches(since)
         snapshots = await self._fetch_snapshots(since)
@@ -268,4 +268,4 @@ class HabitTracker:
         if not switches:
             return 0
         first = datetime.fromisoformat(switches[0]["switched_at"])
-        return max(1, (datetime.utcnow() - first).days)
+        return max(1, (datetime.now(timezone.utc) - first).days)

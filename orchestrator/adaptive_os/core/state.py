@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -69,7 +69,7 @@ class StateDB:
                 """INSERT INTO profile_history
                    (profile, switched_at, reason, confidence, triggered_by)
                    VALUES (?, ?, ?, ?, ?)""",
-                (profile, datetime.utcnow().isoformat(), reason, confidence, triggered_by),
+                (profile, datetime.now(timezone.utc).isoformat(), reason, confidence, triggered_by),
             )
             await db.commit()
 
@@ -77,7 +77,7 @@ class StateDB:
         async with aiosqlite.connect(self._path) as db:
             await db.execute(
                 "INSERT INTO context_snapshots (snapshot, recorded_at) VALUES (?, ?)",
-                (json.dumps(snapshot), datetime.utcnow().isoformat()),
+                (json.dumps(snapshot), datetime.now(timezone.utc).isoformat()),
             )
             await db.commit()
 
